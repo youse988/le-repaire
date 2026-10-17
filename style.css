@@ -1,0 +1,1551 @@
+/* ==========================================================
+   لعبة المحتال (EL IMPOSTEUR) - التنسيق والتصميم العام
+   دعم كامل للغة العربية (RTL) مع خطوط Cairo و Tajawal
+   ========================================================== */
+
+:root {
+    --bg-main: #0a0e14;
+    --bg-card: rgba(22, 27, 34, 0.85);
+    --bg-card-hover: rgba(30, 38, 48, 0.95);
+    --bg-card-selected: rgba(0, 184, 148, 0.15);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-focus: #00b894;
+    
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+
+    --color-green: #00b894;
+    --color-green-glow: rgba(0, 184, 148, 0.3);
+    --color-red: #ff4757;
+    --color-red-glow: rgba(255, 71, 87, 0.4);
+    --color-amber: #ffa502;
+    --color-blue: #3742fa;
+    --color-purple: #a55eea;
+
+    --font-heading: 'Cairo', 'Tajawal', sans-serif;
+    --font-body: 'Tajawal', 'Cairo', sans-serif;
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+    --shadow-neon-green: 0 0 20px rgba(0, 184, 148, 0.4);
+    --shadow-neon-red: 0 0 25px rgba(255, 71, 87, 0.5);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 184, 148, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(255, 71, 87, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(165, 94, 234, 0.05) 0%, transparent 50%);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    direction: rtl;
+    text-align: right;
+}
+
+/* ==========================================================
+   شريط الرأس (HEADER)
+   ========================================================== */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(10, 14, 20, 0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 20px;
+}
+
+.header-content {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 2px 8px rgba(0, 184, 148, 0.3));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.logo-text h1 {
+    font-family: var(--font-heading);
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #ffffff 40%, var(--color-green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.arabic-tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-green);
+    display: block;
+    margin-top: -3px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================
+   الحاوية الرئيسية وإدارة الشاشات
+   ========================================================== */
+.app-main {
+    flex: 1;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.screen {
+    display: none;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    width: 100%;
+}
+
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================
+   الشاشة 1 : الإعدادات
+   ========================================================== */
+.setup-hero {
+    text-align: center;
+    padding: 10px 0 6px;
+}
+
+.setup-hero h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 6px;
+    color: #fff;
+}
+
+.setup-hero p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* البطاقات العامة */
+.config-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-icon {
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-title h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.card-sub {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 2px;
+}
+
+.btn-secondary-sm {
+    background: rgba(0, 184, 148, 0.15);
+    border: 1px solid rgba(0, 184, 148, 0.35);
+    color: var(--color-green);
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 8px 14px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-sm:hover {
+    background: rgba(0, 184, 148, 0.25);
+    border-color: var(--color-green);
+    transform: translateY(-1px);
+}
+
+/* قائمة اللاعبين */
+.players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player-item-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    transition: border-color 0.2s ease;
+}
+
+.player-item-row:focus-within {
+    border-color: var(--color-green);
+    box-shadow: 0 0 0 2px var(--color-green-glow);
+}
+
+.player-avatar-badge {
+    font-size: 1.4rem;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s ease;
+}
+
+.player-avatar-badge:hover {
+    transform: scale(1.15);
+}
+
+.player-name-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: right;
+}
+
+.player-name-input::placeholder {
+    color: var(--text-muted);
+}
+
+.btn-remove-player {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    transition: all 0.2s ease;
+}
+
+.btn-remove-player:hover {
+    color: var(--color-red);
+    background: rgba(255, 71, 87, 0.15);
+}
+
+.btn-ghost-full {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed var(--border-color);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 800;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-ghost-full:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-secondary);
+    color: #fff;
+}
+
+/* عداد المحتالين */
+.counter-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+}
+
+.counter-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.counter-btn:hover {
+    background: var(--color-red);
+    border-color: var(--color-red);
+}
+
+.counter-val {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--color-red);
+    min-width: 24px;
+    text-align: center;
+}
+
+/* خيارات التلميح */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.radio-card {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.radio-card input {
+    margin-inline-end: 14px;
+    margin-top: 6px;
+    accent-color: var(--color-green);
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.radio-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.radio-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #fff;
+}
+
+.radio-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.radio-card.selected {
+    border-color: var(--color-green);
+    background: var(--bg-card-selected);
+    box-shadow: 0 0 0 1px var(--color-green-glow);
+}
+
+/* الأصناف */
+.quick-links .text-link {
+    background: none;
+    border: none;
+    color: var(--color-green);
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: var(--font-body);
+}
+
+.categories-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.category-toggle-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.category-toggle-card:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.category-toggle-card.checked {
+    border-color: var(--color-green);
+    background: rgba(0, 184, 148, 0.1);
+}
+
+.cat-left-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cat-name {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #fff;
+}
+
+.cat-count {
+    font-size: 0.8rem;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.cat-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-green);
+    cursor: pointer;
+}
+
+/* الأزرار الكبيرة */
+.action-footer {
+    position: sticky;
+    bottom: 16px;
+    z-index: 40;
+    padding-top: 10px;
+}
+
+.btn-primary-large {
+    width: 100%;
+    background: linear-gradient(135deg, var(--color-green) 0%, #009975 100%);
+    border: none;
+    color: #0d1117;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 900;
+    padding: 18px 24px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    box-shadow: var(--shadow-neon-green);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-primary-large:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 0 30px rgba(0, 184, 148, 0.6);
+}
+
+.btn-primary-large:active {
+    transform: translateY(1px);
+}
+
+.btn-danger-large {
+    width: 100%;
+    background: linear-gradient(135deg, var(--color-red) 0%, #d63031 100%);
+    border: none;
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 900;
+    padding: 16px 24px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    box-shadow: var(--shadow-neon-red);
+    transition: all 0.2s ease;
+}
+
+.btn-danger-large:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(255, 71, 87, 0.7);
+}
+
+.btn-danger-large.disabled,
+.btn-danger-large:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-secondary-large {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 800;
+    padding: 15px 24px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary-large:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================
+   الشاشة 2 : كشف الأدوار
+   ========================================================== */
+.pass-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+}
+
+.step-indicator {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-green), #00cec9);
+    width: 25%;
+    transition: width 0.3s ease;
+}
+
+.pass-device-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 36px 24px;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.pass-avatar {
+    font-size: 4rem;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    animation: pulseAvatar 2s ease-in-out infinite;
+}
+
+@keyframes pulseAvatar {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.pass-label {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.pass-player-name {
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: #fff;
+    margin-top: -6px;
+}
+
+.pass-warning {
+    font-size: 0.9rem;
+    color: var(--color-amber);
+    background: rgba(255, 165, 2, 0.1);
+    border: 1px solid rgba(255, 165, 2, 0.25);
+    padding: 8px 18px;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+}
+
+.btn-reveal-action {
+    margin-top: 10px;
+    width: 100%;
+    background: linear-gradient(135deg, #3742fa 0%, #2f3542 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 900;
+    padding: 18px 24px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(55, 66, 250, 0.35);
+    transition: all 0.2s ease;
+}
+
+.btn-reveal-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(55, 66, 250, 0.5);
+}
+
+/* بطاقة الكلمة السرية */
+.secret-card-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--border-color);
+    padding: 30px 20px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+    animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.role-badge {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 900;
+    padding: 8px 24px;
+    border-radius: var(--radius-full);
+}
+
+.role-badge.innocent {
+    background: rgba(0, 184, 148, 0.2);
+    color: var(--color-green);
+    border: 1px solid var(--color-green);
+    box-shadow: var(--shadow-neon-green);
+}
+
+.role-badge.imposter {
+    background: rgba(255, 71, 87, 0.25);
+    color: var(--color-red);
+    border: 1px solid var(--color-red);
+    box-shadow: var(--shadow-neon-red);
+    animation: flashAlert 1.2s ease-in-out infinite;
+}
+
+@keyframes flashAlert {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.04); }
+}
+
+.secret-content {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.secret-category-tag {
+    font-size: 0.9rem;
+    font-weight: 800;
+    padding: 4px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    color: var(--color-green);
+}
+
+.secret-word-box {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    width: 100%;
+}
+
+.secret-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.secret-word-text {
+    font-family: var(--font-heading);
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: #fff;
+    word-break: break-word;
+}
+
+.secret-word-text.imposter-text {
+    color: var(--color-red);
+    font-size: 2rem;
+}
+
+.hint-box {
+    background: rgba(255, 165, 2, 0.1);
+    border: 1px dashed rgba(255, 165, 2, 0.4);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    width: 100%;
+    text-align: right;
+}
+
+.hint-title {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: var(--color-amber);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.hint-text {
+    font-size: 1rem;
+    color: #fff;
+    line-height: 1.5;
+}
+
+.secret-advice {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    max-width: 90%;
+}
+
+/* ==========================================================
+   الشاشة 3 : طاولة الحوار
+   ========================================================== */
+.round-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.starter-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, rgba(0, 184, 148, 0.15) 0%, rgba(0, 206, 201, 0.08) 100%);
+    border: 1px solid rgba(0, 184, 148, 0.3);
+    padding: 16px;
+    border-radius: var(--radius-md);
+}
+
+.dice-icon {
+    font-size: 2.4rem;
+    animation: rotateDice 4s ease-in-out infinite;
+}
+
+@keyframes rotateDice {
+    0%, 100% { transform: rotate(0); }
+    50% { transform: rotate(15deg); }
+}
+
+.starter-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: block;
+    font-weight: 700;
+}
+
+.starter-name {
+    font-family: var(--font-heading);
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #fff;
+}
+
+.round-rules-tip {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    line-height: 1.6;
+}
+
+/* المؤقت */
+.timer-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.timer-display {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 2px;
+    direction: ltr;
+}
+
+.timer-display.danger {
+    color: var(--color-red);
+    animation: flashAlert 0.8s ease-in-out infinite;
+}
+
+.timer-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-timer-action {
+    background: rgba(0, 184, 148, 0.2);
+    border: 1px solid var(--color-green);
+    color: var(--color-green);
+    font-weight: 800;
+    font-family: var(--font-body);
+    padding: 10px 22px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-timer-action:hover {
+    background: var(--color-green);
+    color: #000;
+}
+
+.btn-timer-action-ghost {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-weight: 700;
+    font-family: var(--font-body);
+    padding: 10px 18px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-timer-action-ghost:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+/* اللاعبون الحاضرون */
+.alive-players-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.alive-players-card h4 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.alive-players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+}
+
+.alive-player-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.alive-player-tag.eliminated {
+    opacity: 0.4;
+    text-decoration: line-through;
+    border-color: rgba(255, 71, 87, 0.3);
+    background: rgba(255, 71, 87, 0.05);
+}
+
+/* ==========================================================
+   الشاشة 4 : التصويت
+   ========================================================== */
+.vote-hero {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.vote-hero h2 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+.vote-hero p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+.vote-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+@media (min-width: 480px) {
+    .vote-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.vote-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 18px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+    user-select: none;
+}
+
+.vote-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--bg-card-hover);
+}
+
+.vote-card.selected {
+    border-color: var(--color-red);
+    background: rgba(255, 71, 87, 0.15);
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.35);
+    transform: scale(1.03);
+}
+
+.vote-card-avatar {
+    font-size: 2.4rem;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vote-card-name {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    word-break: break-word;
+}
+
+/* ==========================================================
+   الشاشة 5 : نهاية الجولة
+   ========================================================== */
+.gameover-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 30px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.gameover-trophy {
+    font-size: 4rem;
+    animation: trophyBounce 2s ease-in-out infinite;
+}
+
+@keyframes trophyBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+#gameover-title {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #fff;
+}
+
+#gameover-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-top: -10px;
+}
+
+.word-recap-box {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    width: 100%;
+}
+
+.recap-category {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--color-green);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.recap-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.recap-word {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 4px 0;
+}
+
+.recap-hint {
+    font-size: 0.95rem;
+    color: var(--color-amber);
+}
+
+.roles-recap-list {
+    width: 100%;
+    text-align: right;
+}
+
+.roles-recap-list h4 {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.roles-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.role-recap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+}
+
+.role-tag-innocent {
+    background: rgba(0, 184, 148, 0.2);
+    color: var(--color-green);
+    border: 1px solid rgba(0, 184, 148, 0.4);
+    font-size: 0.8rem;
+    font-weight: 900;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+}
+
+.role-tag-imposter {
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--color-red);
+    border: 1px solid rgba(255, 71, 87, 0.4);
+    font-size: 0.8rem;
+    font-weight: 900;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+}
+
+.gameover-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+/* ==========================================================
+   النوافذ المنبثقة (MODALS)
+   ========================================================== */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-card {
+    background: #161b22;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: right;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+
+.modal-header h3 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 900;
+}
+
+.btn-close-modal {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-close-modal:hover {
+    color: #fff;
+}
+
+/* نافذة التحقيق والتشويق */
+.elimination-modal-card {
+    text-align: center;
+    padding: 36px 24px;
+}
+
+.pulsing-suspense {
+    font-size: 3.5rem;
+    animation: pulseAvatar 1s infinite alternate;
+}
+
+.loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.loading-dots span {
+    width: 10px;
+    height: 10px;
+    background: var(--color-green);
+    border-radius: var(--radius-full);
+    animation: bounceDots 1.4s infinite ease-in-out both;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounceDots {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+.verdict-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    animation: popIn 0.3s ease;
+}
+
+.verdict-avatar {
+    font-size: 3.5rem;
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border-color);
+}
+
+.verdict-badge {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 900;
+    padding: 8px 24px;
+    border-radius: var(--radius-full);
+}
+
+.verdict-badge.imposter-verdict {
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--color-red);
+    border: 1px solid var(--color-red);
+    box-shadow: var(--shadow-neon-red);
+}
+
+.verdict-badge.innocent-verdict {
+    background: rgba(255, 165, 2, 0.2);
+    color: var(--color-amber);
+    border: 1px solid var(--color-amber);
+}
+
+/* تخمين الفرصة الأخيرة */
+.imposter-guess-box {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    width: 100%;
+    margin-top: 10px;
+    text-align: right;
+}
+
+.imposter-guess-box h4 {
+    color: var(--color-amber);
+    font-size: 1.05rem;
+    font-weight: 900;
+    margin-bottom: 6px;
+}
+
+.imposter-guess-box p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.guess-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.guess-input-group input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+    text-align: right;
+}
+
+.guess-input-group input:focus {
+    border-color: var(--color-green);
+}
+
+.guess-feedback {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.guess-feedback.success {
+    background: rgba(0, 184, 148, 0.2);
+    color: var(--color-green);
+    border: 1px solid var(--color-green);
+}
+
+.guess-feedback.failed {
+    background: rgba(255, 71, 87, 0.2);
+    color: var(--color-red);
+    border: 1px solid var(--color-red);
+}
+
+/* القواعد */
+.rules-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.rule-block {
+    display: flex;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.rule-num {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--color-green);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 184, 148, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rule-block h4 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.rule-block p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* نموذج إضافة الكلمات */
+#form-add-word {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+    text-align: right;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--color-green);
+}
+
+.custom-words-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.custom-word-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+}
+
+.btn-del-custom {
+    background: none;
+    border: none;
+    color: var(--color-red);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* عناصر عامة */
+.hidden {
+    display: none !important;
+}
+
+/* استجابة الشاشات الصغيرة */
+@media (max-width: 480px) {
+    .app-main {
+        padding: 14px 12px 30px;
+    }
+    .setup-hero h2 {
+        font-size: 1.7rem;
+    }
+    .pass-player-name {
+        font-size: 2rem;
+    }
+    .secret-word-text {
+        font-size: 2rem;
+    }
+    .timer-display {
+        font-size: 2.8rem;
+    }
+}

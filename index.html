@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Le Repaire 🕵️‍♂️ | الوكر</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- شريط الرأس الرئيسي -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-group">
+                <span class="logo-icon">🕵️‍♂️</span>
+                <div class="logo-text">
+                    <h1>LE REPAIRE</h1>
+                    <span class="arabic-tag">الوكر | شكون هو المحتال بيناتنا ؟</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-custom-words" class="icon-btn" title="كلماتي المخصصة" aria-label="كلمات مخصصة">
+                    ✏️
+                </button>
+                <button id="btn-rules" class="icon-btn" title="قواعد اللعبة" aria-label="القواعد">
+                    ❓
+                </button>
+                <button id="btn-sound" class="icon-btn" title="تشغيل / كتم الصوت" aria-label="الصوت">
+                    🔊
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- الحاوية الرئيسية للتطبيق -->
+    <main class="app-main">
+
+        <!-- ==============================================
+             الشاشة 1 : إعدادات وبدء اللعبة
+             ============================================== -->
+        <section id="screen-setup" class="screen active">
+            <div class="setup-hero">
+                <h2>جلسة لعب جديدة 🎮</h2>
+                <p>اكشفوا المحتال المختبئ بينكم قبل أن يكتشف الكلمة السرية !</p>
+            </div>
+
+            <!-- بطاقة إعداد اللاعبين -->
+            <div class="config-card">
+                <div class="card-header">
+                    <div class="header-title">
+                        <span class="card-icon">👥</span>
+                        <div>
+                            <h3>اللاعبون</h3>
+                            <span class="card-sub" id="players-count-label">4 لاعبين مسجلين</span>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-random-names" class="btn-secondary-sm">
+                        🎲 أسماء جزائرية
+                    </button>
+                </div>
+
+                <div class="players-list" id="players-container">
+                    <!-- تتولد تلقائياً عبر الجافاسكريبت -->
+                </div>
+
+                <button type="button" id="btn-add-player" class="btn-ghost-full">
+                    + إضافة لاعب جديد
+                </button>
+            </div>
+
+            <!-- بطاقة عدد المحتالين -->
+            <div class="config-card">
+                <div class="card-header">
+                    <div class="header-title">
+                        <span class="card-icon">🚨</span>
+                        <div>
+                            <h3>عدد المحتالين (الدخلاء)</h3>
+                            <span class="card-sub" id="imposters-recommendation">المستحسن : محتال واحد</span>
+                        </div>
+                    </div>
+                    <div class="counter-control">
+                        <button type="button" class="counter-btn" id="btn-minus-imposter" aria-label="إنقاص">-</button>
+                        <span class="counter-val" id="imposter-count-val">1</span>
+                        <button type="button" class="counter-btn" id="btn-plus-imposter" aria-label="زيادة">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- خيارات تلميح المحتال -->
+            <div class="config-card">
+                <div class="card-header">
+                    <div class="header-title">
+                        <span class="card-icon">💡</span>
+                        <div>
+                            <h3>تلميح المحتال</h3>
+                            <span class="card-sub">درجة المساعدة المقدمة للمحتال لكي يتمكن من التمويه</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="options-grid">
+                    <label class="radio-card selected">
+                        <input type="radio" name="hint-mode" value="subtle" checked>
+                        <div class="radio-content">
+                            <span class="radio-title">💡 تلميح خاص وذكي</span>
+                            <span class="radio-desc">يحصل المحتال على وصف وتلميح غير مباشر عن الكلمة ليتمكن من التمويه والمراوغة.</span>
+                        </div>
+                    </label>
+
+                    <label class="radio-card">
+                        <input type="radio" name="hint-mode" value="category">
+                        <div class="radio-content">
+                            <span class="radio-title">🏷️ معرفة الصنف فقط</span>
+                            <span class="radio-desc">يعرف المحتال فقط فئة الكلمة (مثلاً : "أطباق جزائرية") دون أي تفاصيل أخرى.</span>
+                        </div>
+                    </label>
+
+                    <label class="radio-card">
+                        <input type="radio" name="hint-mode" value="undercover">
+                        <div class="radio-content">
+                            <span class="radio-title">🎭 وضع الكلمة الفخ (Undercover)</span>
+                            <span class="radio-desc">يحصل المحتال على كلمة قريبة ومضللة (مثال: الكسكس مقابل الرشتة).</span>
+                        </div>
+                    </label>
+
+                    <label class="radio-card">
+                        <input type="radio" name="hint-mode" value="none">
+                        <div class="radio-content">
+                            <span class="radio-title">🚫 الصعب جداً (بدون أي تلميح)</span>
+                            <span class="radio-desc">المحتال في الظلام الدامس تماماً! لا يعرف شيئاً وعليه استنتاج الكلمة من كلام الآخرين.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- بطاقة اختيار الأصناف والمواضيع -->
+            <div class="config-card">
+                <div class="card-header">
+                    <div class="header-title">
+                        <span class="card-icon">📚</span>
+                        <div>
+                            <h3>المواضيع والأصناف</h3>
+                            <span class="card-sub">اختر الأصناف التي ترغبون في اللعب بها</span>
+                        </div>
+                    </div>
+                    <div class="quick-links">
+                        <button type="button" id="btn-select-all-cat" class="text-link">تحديد الكل</button>
+                    </div>
+                </div>
+
+                <div class="categories-grid" id="categories-container">
+                    <!-- تتولد تلقائياً عبر الجافاسكريبت -->
+                </div>
+            </div>
+
+            <!-- زر بدء اللعبة -->
+            <div class="action-footer">
+                <button type="button" id="btn-start-game" class="btn-primary-large">
+                    بدء اللعبة وتوزيع الأدوار 🚀
+                </button>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             الشاشة 2 : كشف الأدوار السرية (Pass & Play)
+             ============================================== -->
+        <section id="screen-reveal" class="screen">
+            <div class="pass-header">
+                <span class="step-indicator" id="reveal-progress-text">اللاعب 1 من 4</span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="reveal-progress-bar"></div>
+                </div>
+            </div>
+
+            <!-- بطاقة تسليم الهاتف -->
+            <div class="pass-device-card" id="pass-prompt-card">
+                <div class="pass-avatar" id="reveal-player-avatar">🦁</div>
+                <span class="pass-label">مرّر الهاتف إلى اللاعب :</span>
+                <h2 class="pass-player-name" id="reveal-player-name">أمين</h2>
+                <p class="pass-warning">⚠️ احرص تماماً ألا يرى أحد من الجالسين شاشتك !</p>
+
+                <button type="button" id="btn-trigger-reveal" class="btn-reveal-action">
+                    👁️ اضغط لكشف دورك السري
+                </button>
+            </div>
+
+            <!-- البطاقة السرية بعد الضغط -->
+            <div class="secret-card-container hidden" id="secret-card-revealed">
+                <div class="role-badge" id="secret-role-badge">أنت بريء 😇</div>
+
+                <div class="secret-content">
+                    <span class="secret-category-tag" id="secret-category-name">🥘 أطباق ومأكولات جزائرية</span>
+                    
+                    <div class="secret-word-box">
+                        <span class="secret-label">كلمتك السرية هي :</span>
+                        <div class="secret-word-text" id="secret-word-display">الكسكس</div>
+                    </div>
+
+                    <div class="hint-box hidden" id="secret-hint-container">
+                        <span class="hint-title">💡 تلميح يساعدك على التمويه :</span>
+                        <p class="hint-text" id="secret-hint-text"></p>
+                    </div>
+
+                    <div class="secret-advice" id="secret-advice-text">
+                        صف هذه الكلمة بذكاء واعتدال حتى لا تكشفها للمحتال !
+                    </div>
+                </div>
+
+                <button type="button" id="btn-hide-and-next" class="btn-primary-large">
+                    فهمت، إخفاء الدور والتمرير للاعب التالي 🔒
+                </button>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             الشاشة 3 : طاولة الحوار والنقاش
+             ============================================== -->
+        <section id="screen-discuss" class="screen">
+            <div class="round-card">
+                <div class="starter-banner">
+                    <span class="dice-icon">🎲</span>
+                    <div>
+                        <span class="starter-label">أول لاعب يبدأ بالكلام :</span>
+                        <h3 class="starter-name" id="starter-player-name">مهدي</h3>
+                    </div>
+                </div>
+
+                <div class="round-rules-tip">
+                    <p>🗣️ <strong>قاعدة الدور :</strong> يقوم كل لاعب بدوره بذكر <strong>كلمة واحدة أو عبارة مقتضبة</strong> تعبر عن كلمته السرية. على المحتال أن يتظاهر بأنه يعرف الكلمة ويندمج في الحوار دون لفت الأنظار !</p>
+                </div>
+            </div>
+
+            <!-- مؤقت النقاش -->
+            <div class="timer-card">
+                <div class="timer-display" id="timer-display">02:00</div>
+                <div class="timer-actions">
+                    <button type="button" id="btn-timer-toggle" class="btn-timer-action">بدء المؤقت ⏱️</button>
+                    <button type="button" id="btn-timer-reset" class="btn-timer-action-ghost">إعادة ضبط</button>
+                </div>
+            </div>
+
+            <!-- قائمة اللاعبين الأحياء في الجولة -->
+            <div class="alive-players-card">
+                <h4>اللاعبون الحاضرون حول الطاولة :</h4>
+                <div class="alive-players-grid" id="alive-players-list">
+                    <!-- تملأ بالجافاسكريبت -->
+                </div>
+            </div>
+
+            <div class="action-footer">
+                <button type="button" id="btn-go-to-vote" class="btn-danger-large">
+                    الانتقال لمرحلة التصويت 🗳️
+                </button>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             الشاشة 4 : مرحلة التصويت والإقصاء
+             ============================================== -->
+        <section id="screen-vote" class="screen">
+            <div class="vote-hero">
+                <h2>تصويت المجموعة 🗳️</h2>
+                <p>تناقشوا وحددوا الشخص المشتبه في كونه المحتال الدخيل :</p>
+            </div>
+
+            <div class="vote-grid" id="vote-players-grid">
+                <!-- شبكة اللاعبين للتصويت -->
+            </div>
+
+            <div class="action-footer">
+                <button type="button" id="btn-confirm-eliminate" class="btn-danger-large disabled" disabled>
+                    يرجى اختيار لاعب للتصويت عليه ⚖️
+                </button>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             الشاشة 5 : نهاية الجولة والنتيجة النهائية
+             ============================================== -->
+        <section id="screen-gameover" class="screen">
+            <div class="gameover-card">
+                <div class="gameover-trophy" id="gameover-icon">🏆</div>
+                <h2 id="gameover-title">انتصار الأبرياء !</h2>
+                <p id="gameover-subtitle">تم كشف المحتال وإقصاؤه بنجاح.</p>
+
+                <!-- صندوق الكلمة السرية -->
+                <div class="word-recap-box">
+                    <span class="recap-category" id="recap-category-name">🥘 أطباق جزائرية</span>
+                    <span class="recap-label">الكلمة السرية الأصلية كانت :</span>
+                    <div class="recap-word" id="recap-secret-word">الكسكس</div>
+                    <div class="recap-hint" id="recap-secret-hint">تلميح : الطبق الوطني المحضر من السميد...</div>
+                </div>
+
+                <!-- كشف أدوار جميع اللاعبين -->
+                <div class="roles-recap-list">
+                    <h4>الأدوار الحقيقية لجميع اللاعبين :</h4>
+                    <div class="roles-grid" id="recap-roles-container">
+                        <!-- تملأ بالجافاسكريبت -->
+                    </div>
+                </div>
+
+                <div class="gameover-actions">
+                    <button type="button" id="btn-replay-same" class="btn-primary-large">
+                        إعادة اللعب (بنفس اللاعبين) 🔄
+                    </button>
+                    <button type="button" id="btn-new-game-setup" class="btn-secondary-large">
+                        تغيير الإعدادات واللاعبين ⚙️
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==============================================
+         نافذة الإقصاء والتشويق الدرامي
+         ============================================== -->
+    <div class="modal-backdrop hidden" id="modal-elimination">
+        <div class="modal-card elimination-modal-card">
+            <div class="suspense-container" id="suspense-view">
+                <div class="pulsing-suspense">⚖️</div>
+                <h3>فرز الأصوات والتحقيق...</h3>
+                <p>الحقيقة على وشك الظهور !</p>
+                <div class="loading-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
+            <div class="verdict-container hidden" id="verdict-view">
+                <div class="verdict-avatar" id="verdict-avatar">🦁</div>
+                <h3 id="verdict-player-name">أمين</h3>
+                <div class="verdict-badge" id="verdict-role-badge">كان هو المحتال !</div>
+                <p id="verdict-detail-text">تمت محاصرته واكتشافه من قبل المجموعة.</p>
+
+                <!-- فرصة المحتال الأخيرة لتخمين الكلمة -->
+                <div class="imposter-guess-box hidden" id="imposter-guess-section">
+                    <h4>🎯 الفرصة الأخيرة للمحتال !</h4>
+                    <p>يمكن للمحتال محاولة تخمين الكلمة السرية الصحيحة لخطف الفوز :</p>
+                    <div class="guess-input-group">
+                        <input type="text" id="input-imposter-guess" placeholder="اكتب الكلمة السرية هنا..." autocomplete="off">
+                        <button type="button" id="btn-submit-guess" class="btn-secondary-sm">تحقق</button>
+                    </div>
+                    <div id="guess-result-msg" class="guess-feedback hidden"></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="btn-continue-after-verdict" class="btn-primary-large">
+                        متابعة النتيجة ⬅️
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         نافذة قواعد اللعبة
+         ============================================== -->
+    <div class="modal-backdrop hidden" id="modal-rules">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📜 قواعد وطريقة اللعب</h3>
+                <button type="button" class="btn-close-modal" id="btn-close-rules">&times;</button>
+            </div>
+            <div class="modal-body rules-body">
+                <div class="rule-block">
+                    <span class="rule-num">1</span>
+                    <div>
+                        <h4>الهدف من اللعبة</h4>
+                        <p>على <strong>الأبرياء</strong> اكتشاف <strong>المحتالين (الدخلاء)</strong> والتصويت لإخراجهم. وعلى المحتال التمويه، الاندماج ومحاولة معرفة الكلمة السرية.</p>
+                    </div>
+                </div>
+
+                <div class="rule-block">
+                    <span class="rule-num">2</span>
+                    <div>
+                        <h4>توزيع الأدوار بالسر</h4>
+                        <p>يتم تمرير الهاتف بين اللاعبين ليشاهد كل لاعب دوره وسره دون أن يراه الآخرون. يحصل الأبرياء على الكلمة السرية، بينما يحصل المحتال على إشعار خاص وتلميح بحسب إعداداتكم.</p>
+                    </div>
+                </div>
+
+                <div class="rule-block">
+                    <span class="rule-num">3</span>
+                    <div>
+                        <h4>حوار الطاولة</h4>
+                        <p>يحدد النظام أول لاعب يتكلم. يذكر كل لاعب <strong>كلمة أو جملة وصفية وجيزة</strong> عن كلمته بحذر، حتى لا يسهل على المحتال كشفها !</p>
+                    </div>
+                </div>
+
+                <div class="rule-block">
+                    <span class="rule-num">4</span>
+                    <div>
+                        <h4>التصويت والإقصاء</h4>
+                        <p>يتناقش اللاعبون ويصوتون لإقصاء المشتبه به. إذا تم كشف المحتال، يُمنح فرصة ذهبية أخيرة لتخمين الكلمة السرية وسرقة الفوز !</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-primary-large" id="btn-rules-ok">فهمت القواعد ! 👍</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================
+         نافذة إضافة كلمات مخصصة
+         ============================================== -->
+    <div class="modal-backdrop hidden" id="modal-custom-words">
+        <div class="modal-card custom-words-modal">
+            <div class="modal-header">
+                <h3>✏️ إضافة كلماتي الخاصة</h3>
+                <button type="button" class="btn-close-modal" id="btn-close-custom">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="custom-intro">يمكنكم إضافة كلماتكم الخاصة وتلميحاتها (تُحفظ تلقائياً في جهازكم) :</p>
+                
+                <form id="form-add-word">
+                    <div class="form-group">
+                        <label for="custom-word-cat">الصنف / الموضوع :</label>
+                        <select id="custom-word-cat">
+                            <option value="plats_algeriens">🥘 أطباق ومأكولات جزائرية</option>
+                            <option value="lieux_algerie">🇩🇿 أماكن ومعالم في الجزائر</option>
+                            <option value="lieux_monde">🌍 أماكن ومعالم حول العالم</option>
+                            <option value="personnages_algeriens">🎭 شخصيات وفنانين جزائريين</option>
+                            <option value="personnages_monde">🌟 شخصيات ونجوم عالميين</option>
+                            <option value="personnalise">✨ تصنيفي الخاص</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom-word-name">الكلمة السرية :</label>
+                        <input type="text" id="custom-word-name" placeholder="مثال: مطلوع، جانت، سولكينغ..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom-word-hint">تلميح للمحتال :</label>
+                        <input type="text" id="custom-word-hint" placeholder="مثال: خبز تقليدي جزائري منتفخ بالسميد..." required>
+                    </div>
+
+                    <button type="submit" class="btn-primary-large">إضافة هذه الكلمة ➕</button>
+                </form>
+
+                <div class="custom-words-list-container">
+                    <h4>الكلمات التي أضفتموها (<span id="custom-words-count">0</span>) :</h4>
+                    <div class="custom-words-list" id="custom-words-list">
+                        <!-- تملأ بالجافاسكريبت -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ملفات الجافاسكريبت -->
+    <script src="words.js"></script>
+    <script src="audio.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
